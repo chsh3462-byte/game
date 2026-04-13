@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Lite RPG</title>
+<style>
+body{background:#0a0a0a;color:#fff;font-family:sans-serif;text-align:center}
+.box{border:1px solid #333;margin:8px;padding:10px;border-radius:10px}
+button{padding:8px;margin:4px;background:#222;color:#fff;border:none;border-radius:8px}
+button:hover{background:#444}
+</style>
+</head>
+<body>
+
+<h2>🔥 Lite RPG</h2>
+
+<div class="box">
+LV <span id="lv">1</span> |
+HP <span id="hp">100</span> |
+MP <span id="mp">50</span> |
+ATK <span id="atk">10</span> |
+GOLD <span id="gold">0</span>
+</div>
+
+<div class="box">
+<button onclick="goTab('dungeon')">던전</button>
+<button onclick="goTab('shop')">상점</button>
+<button onclick="goTab('inv')">인벤</button>
+<button onclick="goTab('stat')">스탯</button>
+</div>
+
+<div id="content"></div>
+
+<div class="box">
+<div id="log">시작</div>
+</div>
+
+<script>
+let tab="dungeon"
+
+let player={
+lv:1,hp:100,mp:50,atk:10,gold:100,sp:0,
+weapon:0,inventory:[],kills:{},rebirth:0
+}
+
+let enemy={hp:0,max:0,name:""}
+let progress=0
+
+function update(){
+lv.innerText=player.lv
+hp.innerText=player.hp
+mp.innerText=player.mp
+atk.innerText=player.atk+player.weapon
+gold.innerText=player.gold
+}
+
+function goTab(t){tab=t;render()}
+
+function render(){
+if(tab==="dungeon"){
+content.innerHTML=`
+<div class="box">
+<button onclick="start()">던전 시작</button>
+</div>
+<div class="box">
+${enemy.hp>0?enemy.name+" HP:"+enemy.hp:"대기중"}
+</div>
+<div class="box">
+<button onclick="attack()">공격</button>
+<button onclick="skill()">스킬</button>
+</div>`
+}
+
+if(tab==="shop"){
+content.innerHTML=`
+<div class="box">
+<button onclick="buyWeapon()">무기 구매 (100G)</button>
+<button onclick="buyPotion()">포션 (50G)</button>
+</div>`
+}
+
+if(tab==="inv"){
+content.innerHTML=`
+<div class="box">
+무기 +${player.weapon}<br>
+포션 ${player.inventory.length}
+</div>`
+}
+
+if(tab==="stat"){
+content.innerHTML=`
+<div class="box">
+SP:${player.sp}<br>
+<button onclick="upAtk()">ATK+</button>
+<button onclick="rebirth()">환생</button>
+</div>`
+}
+}
+
+function start(){
+progress=0
+spawn()
+}
+
+function spawn(){
+enemy.hp=50+progress*20
+enemy.max=enemy.hp
+enemy.name="몬스터 "+(progress+1)
+}
+
+function attack(){
+if(enemy.hp<=0)return
+let dmg=Math.floor(Math.random()*player.atk)+5
+enemy.hp-=dmg
+log.innerText="공격-"+dmg
+
+if(enemy.hp<=0){
+kill()
+}else enemyAtk()
+
+update()
+render()
+}
+
+function skill(){
+if(player.mp<10){log.innerText="MP 부족";return}
+player.mp-=10
+let dmg=(player.atk+player.weapon)*2
+enemy.hp-=dmg
+log.innerText="스킬-"+dmg
+
+if(enemy.hp<=0){
+kill()
+}else enemyAtk()
+
+update()
+render()
+}
+
+function enemyAtk(){
+let dmg=5+Math.random()*10
+player.hp-=dmg
+if(player.hp<=0){
+alert("사망")
+player.hp=100
+player.mp=50
+}
+}
+
+function kill(){
+player.gold+=50
+player.sp+=1
+player.kills[enemy.name]=(player.kills[enemy.name]||0)+1
+progress++
+
+if(progress>=5){
+log.innerText="클리어!"
+player.lv++
+player.atk+=2
+}else spawn()
+}
+
+function buyWeapon(){
+if(player.gold<100)return
+player.gold-=100
+player.weapon+=5
+}
+
+function buyPotion(){
+if(player.gold<50)return
+player.gold-=50
+player.inventory.push("p")
+}
+
+function upAtk(){
+if(player.sp<=0)return
+player.sp--
+player.atk+=2
+}
+
+function rebirth(){
+if(player.lv<20)return
+player.rebirth++
+player.lv=1
+player.atk=10
+player.weapon=0
+log.innerText="환생!"
+}
+
+update()
+render()
+</script>
+
+</body>
+</html>
