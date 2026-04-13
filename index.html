@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Legend Path - 설치 가이드</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #020203; color: white; font-family: sans-serif; overflow-x: hidden; }
+        .install-card { background: linear-gradient(145deg, #0f1014, #18191e); border: 1px solid rgba(255,255,255,0.1); }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } 100% { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- 모바일/PC 설치 안내 메인 -->
+    <main class="flex-1 flex flex-col items-center justify-center p-6 space-y-8 text-center">
+        <div class="space-y-2">
+            <h1 class="text-4xl font-black italic tracking-tighter">LEGEND <span class="text-blue-500">PATH</span></h1>
+            <p class="text-zinc-500 text-sm">모바일 & PC 통합 어플리케이션</p>
+        </div>
+
+        <div class="install-card p-8 rounded-3xl w-full max-w-sm space-y-6 shadow-2xl">
+            <div class="flex justify-center">
+                <div class="bg-blue-600/20 p-4 rounded-full">
+                    <i data-lucide="download-cloud" class="text-blue-500 w-12 h-12"></i>
+                </div>
+            </div>
+            
+            <div class="space-y-2">
+                <h2 class="text-xl font-bold uppercase italic">게임을 설치하세요</h2>
+                <p class="text-zinc-400 text-xs leading-relaxed">
+                    브라우저의 '설치' 기능을 이용하면<br>
+                    바탕화면에 아이콘이 생성되어 바로 게임이 가능합니다.
+                </p>
+            </div>
+
+            <!-- 기기별 안내 버튼 -->
+            <div class="grid grid-cols-1 gap-3 pt-4">
+                <div class="bg-zinc-900 p-4 rounded-xl text-left flex items-center gap-4 border border-white/5">
+                    <i data-lucide="smartphone" class="text-zinc-400"></i>
+                    <div>
+                        <p class="text-[10px] text-zinc-500 font-bold uppercase">iPhone (Safari)</p>
+                        <p class="text-xs text-white">공유 버튼 → <span class="text-blue-400">'홈 화면에 추가'</span></p>
+                    </div>
+                </div>
+
+                <div class="bg-zinc-900 p-4 rounded-xl text-left flex items-center gap-4 border border-white/5">
+                    <i data-lucide="monitor" class="text-zinc-400"></i>
+                    <div>
+                        <p class="text-[10px] text-zinc-500 font-bold uppercase">PC / Android (Chrome)</p>
+                        <p class="text-xs text-white">상단 메뉴 → <span class="text-blue-400">'앱 설치'</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="alert('브라우저 메뉴를 통해 설치를 진행해주세요!')" class="w-full py-4 bg-white text-black font-black rounded-xl uppercase italic pulse shadow-lg shadow-white/10">
+                Play Now
+            </button>
+        </div>
+    </main>
+
+    <!-- 하단 팁 -->
+    <footer class="p-8 text-center">
+        <p class="text-[10px] text-zinc-600 uppercase tracking-widest leading-loose">
+            No App Store Required • Instant Play • Cross Platform
+        </p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        
+        // PWA 설치 감지 로직 (브라우저 지원시)
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            console.log('설치 가능 상태입니다.');
+        });
+    </script>
+</body>
+</html>
